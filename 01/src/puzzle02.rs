@@ -1,4 +1,5 @@
 use std::{fs::File, io::Read};
+use std::collections::HashMap;
 
 fn is_digit(input: u8) -> bool {
     if input <= 0x29 || input >= 0x3A {
@@ -8,35 +9,23 @@ fn is_digit(input: u8) -> bool {
     true
 }
 
-// i don't really like this, but considering how it's a spelled out string to number, i think there isn't really a better way to handle it? maybe hashmapping?
-
 fn is_spelled_digit(input: &str) -> Option<u8> {
-    if input.find("one").is_some() {
-        return Some(1);
-    }
-    if input.find("two").is_some() {
-        return Some(2);
-    }
-    if input.find("three").is_some() {
-        return Some(3);
-    }
-    if input.find("four").is_some() {
-        return Some(4);
-    }
-    if input.find("five").is_some() {
-        return Some(5);
-    }
-    if input.find("six").is_some() {
-        return Some(6);
-    }
-    if input.find("seven").is_some() {
-        return Some(7);
-    }
-    if input.find("eight").is_some() {
-        return Some(8);
-    }
-    if input.find("nine").is_some() {
-        return Some(9);
+    let num_strings = HashMap::from([
+        ("one", 1),
+        ("two", 2),
+        ("three", 3),
+        ("four", 4),
+        ("five", 5),
+        ("six", 6),
+        ("seven", 7),
+        ("eight", 8),
+        ("nine", 9)
+    ]);
+
+    for item in num_strings {
+        if input.find(item.0).is_some() {
+            return Some(item.1);
+        }
     }
 
     None
