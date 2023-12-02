@@ -1,12 +1,11 @@
 use std::{fs::File, io::Read};
 
-fn separate_by_line(mut data: String) -> Vec<String> {
+fn separate_by_line(data: String) -> Vec<String> {
     let mut out : Vec<String> = Default::default();
+    let mut lines = data.lines();
 
-    while let Some(idx) = data.find('\n') {
-        let line = data[0..idx].to_string();
-        out.push(line);
-        data = data[(idx + 1)..].to_string();
+    while let Some(line) = lines.next() {
+        out.push(line.to_string());
     }
 
     out

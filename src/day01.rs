@@ -32,7 +32,31 @@ fn is_spelled_digit(input: &str) -> Option<u8> {
     None
 }
 
-fn get_calibration_values(data: Vec<String>) -> u64 {
+fn get_calibration_values(data: &Vec<String>) -> u64 {
+    let mut sum : u64 = 0;
+
+    for s in data {
+        let mut dec: u8;
+        for c in s.bytes() {
+            if is_digit(c) {
+                dec = c - 0x30;
+                sum = sum + (dec * 10) as u64;
+                break;
+            }
+        }
+        for c in s.bytes().rev() {
+            if is_digit(c) {
+                dec = c - 0x30;
+                sum = sum + dec as u64;
+                break;
+            }
+        }
+    }
+
+    sum
+}
+
+fn get_calibration_values_expressed(data: &Vec<String>) -> u64 {
     let mut sum : u64 = 0;
 
     for s in data {
@@ -82,22 +106,20 @@ fn get_calibration_values(data: Vec<String>) -> u64 {
 }
 
 pub fn main() -> Result<(), std::io::Error> {
-    
     let data = read_file("input01.txt")?;
 
-    /*let data : Vec<String> = vec!(
-        "two1nine".to_string(),
-        "eighttwothree".to_string(),
-        "abcone2threexyz".to_string(),
-        "xtwone3four".to_string(),
-        "4nineeightseven2".to_string(),
-        "zoneight234".to_string(),
-        "7pqrstsixteen".to_string()
-    );*/
+    /* let data = vec!{
+        "1abc2".to_string(),
+        "pqr3stu8vwx".to_string(),
+        "a1b2c3d4e5f".to_string(),
+        "treb7uchet".to_string()
+    }; */
 
-    let sum = get_calibration_values(data);
-
-    println!("Puzzle #02 total: {}", sum);
+    println!("Day 01:");
+    let sum = get_calibration_values(&data);
+    println!("\tPart 1 - total: {}", sum);
+    let sum = get_calibration_values_expressed(&data);
+    println!("\tPart 2 - total: {}", sum);
 
     Ok(())
 }

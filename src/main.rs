@@ -1,10 +1,10 @@
 mod parse_file;
-mod day011;
-mod day012;
+mod day01;
+mod day02;
 
 fn main() -> Result<(), std::io::Error> {
-    day011::main()?;
-    day012::main()?;
+    day01::main()?;
+    day02::main()?;
 
     Ok(())
 }
