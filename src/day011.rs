@@ -1,4 +1,4 @@
-use std::{fs::File, io::Read};
+use crate::parse_file::read_file;
 
 fn is_digit(input: u8) -> bool {
     if input <= 0x29 || input >= 0x3A {
@@ -8,7 +8,7 @@ fn is_digit(input: u8) -> bool {
     true
 }
 
-fn get_callibration_values(data: Vec<String>) -> u64 {
+fn get_calibration_values(data: Vec<String>) -> u64 {
     let mut sum : u64 = 0;
 
     for s in data {
@@ -32,28 +32,8 @@ fn get_callibration_values(data: Vec<String>) -> u64 {
     sum
 }
 
-fn separate_by_line(mut data: String) -> Vec<String> {
-    let mut out : Vec<String> = Default::default();
-
-    while let Some(idx) = data.find('\n') {
-        let line = data[0..idx].to_string();
-        out.push(line);
-        data = data[(idx + 1)..].to_string();
-    }
-
-    out
-}
-
 pub fn main() -> Result<(), std::io::Error> {
-    let mut file = File::open("input01.txt")?;
-    let mut buffer : String = Default::default();
-    
-    if file.read_to_string(&mut buffer)? == 0 {
-        println!("Empty file.");
-        ()
-    }
-
-    let data = separate_by_line(buffer);
+    let data = read_file("input01.txt")?;
 
     /* let data = vec!{
         "1abc2".to_string(),
@@ -62,7 +42,7 @@ pub fn main() -> Result<(), std::io::Error> {
         "treb7uchet".to_string()
     }; */
 
-    let sum = get_callibration_values(data);
+    let sum = get_calibration_values(data);
 
     println!("Puzzle #01 total: {}", sum);
 
