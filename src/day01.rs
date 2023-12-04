@@ -121,5 +121,7 @@ pub fn main() -> Result<(), std::io::Error> {
     let sum = get_calibration_values_expressed(&data);
     println!("\tPart 2 - total: {}", sum);
 
+    drop(data);
+
     Ok(())
 }

@@ -15,7 +15,7 @@ fn get_count_from_slice(slice: &str, color: &str) -> i32 {
     count
 }
 
-fn get_max_cube_colors(line: String) -> Colors {
+fn get_max_cube_colors(line: &String) -> Colors {
     let mut input = line.clone();
 
     let mut colors = Colors { red: 0, green: 0, blue: 0}; // red, green, blue
@@ -63,15 +63,15 @@ pub fn main() -> Result<(), std::io::Error> {
         "Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green".to_string(),
     };*/
 
-    println!("Day 2:");
+    println!("Day 02:");
 
     let max_colors = Colors { red: 12, green: 13, blue: 14 };
     let mut id_sum = 0;
     let mut total_cube_power = 0;
 
-    for line in data {
+    for line in &data {
         let id = get_game_id(&line);
-        let colors = get_max_cube_colors(line);
+        let colors = get_max_cube_colors(&line);
 
         //print!("Game ID: {} | Colors: (R: {}, G: {}, B: {})", id, colors.red, colors.green, colors.blue);
 
@@ -89,6 +89,8 @@ pub fn main() -> Result<(), std::io::Error> {
 
     println!("\tPart 1 - ID sum: {}", id_sum);
     println!("\tPart 2 - total cube power: {}", total_cube_power);
+
+    drop(data);
 
     Ok(())
 }

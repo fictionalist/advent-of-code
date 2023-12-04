@@ -191,5 +191,7 @@ pub fn main() -> Result<(), std::io::Error> {
 
     println!("\tPart 2 - gear ratios sum: {}", gear_ratio_sum);
 
+    drop(data);
+
     Ok(())
 }
