@@ -180,16 +180,18 @@ pub fn main() -> Result<(), std::io::Error> {
 
     println!("Day 03:");
 
+    let start = std::time::Instant::now();
     let part_list = get_parts(&data);
     let part_numbers = get_numbers(&data);
 
     let part_num_sum = get_part_num_sum(&part_numbers, &part_list);
 
-    println!("\tPart 1 - part num sum: {}", part_num_sum);
+    println!("\tPart 1 - part num sum: {} ({} ms)", part_num_sum, start.elapsed().as_millis());
 
+    let start = std::time::Instant::now();
     let gear_ratio_sum = get_gear_ratios(&part_numbers, &part_list);
 
-    println!("\tPart 2 - gear ratios sum: {}", gear_ratio_sum);
+    println!("\tPart 2 - gear ratios sum: {} ({} ms)", gear_ratio_sum, start.elapsed().as_millis());
 
     drop(data);
 

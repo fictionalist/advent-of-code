@@ -1,37 +1,12 @@
 use crate::parse_file::read_file;
 
-fn get_card_id(line: &str) -> i32 {
-    let colon_position = line.find(':').unwrap();
-    let card_id_str = line[0 .. colon_position].to_string();
-
-    let mut splits = card_id_str.split_whitespace();
-    splits.next();
-
-    let i_str = splits.next().unwrap();
-    
-    let i = i_str.parse::<i32>();
-
-    match i {
-        Ok(i) => {
-            return i;
-        },
-        Err(e) => {
-            println!("Failed to parse card ID: {}", e);
-            return -1;
-        }
-    }
-}
-
 fn get_scratch_values(data: &Vec<String>) -> i32 {
     let mut scratch = 0;
 
-    for line in data {
+    for (_, line) in data.iter().enumerate() {
         let mut winning_values: Vec<i32> = vec!();
 
-        let scratch_values_start = line.find(": ").unwrap() + 2;
-        let scratch_values_end = line.find(" |").unwrap();
-
-        let winning_values_str = line[scratch_values_start .. scratch_values_end].to_string();
+        let winning_values_str = line[(line.find(":").unwrap()) .. line.find("|").unwrap()].to_string();
 
         let mut split = winning_values_str.split_whitespace();
 
@@ -43,9 +18,7 @@ fn get_scratch_values(data: &Vec<String>) -> i32 {
 
         let mut card_values: Vec<i32> = vec!();
 
-        let card_values_start = line.find("| ").unwrap() + 1;
-
-        let card_values_str = line[card_values_start ..].to_string();
+        let card_values_str = line[line.find("|").unwrap() ..].to_string();
         
         split = card_values_str.split_whitespace();
 
@@ -76,26 +49,16 @@ fn get_scratch_values(data: &Vec<String>) -> i32 {
 fn get_scratch_cards(data: &Vec<String>) -> i32 {
     let mut sum_scratchcards = 0;
 
-    let mut num_scratchcards = 0;
+    let mut scratchcards: Vec<i32> = vec!();
 
-    for (i, _) in data.iter().enumerate() {
-        num_scratchcards = i;
-    }
-
-    let mut scratchcards : Vec<i32> = vec!();
-    for _ in 0 .. (num_scratchcards + 1) {
+    for (_, _) in data.iter().enumerate() {
         scratchcards.push(1);
     }
 
-    for line in data {
-        let id = get_card_id(&(line.as_str()));
-
+    for (id, line) in data.iter().enumerate() {
         let mut winning_values: Vec<i32> = vec!();
 
-        let scratch_values_start = line.find(": ").unwrap() + 2;
-        let scratch_values_end = line.find(" |").unwrap();
-
-        let winning_values_str = line[scratch_values_start .. scratch_values_end].to_string();
+        let winning_values_str = line[line.find(":").unwrap() .. line.find("|").unwrap()].to_string();
 
         let mut split = winning_values_str.split_whitespace();
 
@@ -107,9 +70,7 @@ fn get_scratch_cards(data: &Vec<String>) -> i32 {
 
         let mut card_values: Vec<i32> = vec!();
 
-        let card_values_start = line.find("| ").unwrap() + 1;
-
-        let card_values_str = line[card_values_start ..].to_string();
+        let card_values_str = line[line.find("| ").unwrap() ..].to_string();
         
         split = card_values_str.split_whitespace();
 
@@ -118,15 +79,14 @@ fn get_scratch_cards(data: &Vec<String>) -> i32 {
                 card_values.push(i);
             }
         }
-        for _ in 0 .. scratchcards[id as usize - 1] {
-            let mut i = id;
-            for winning_value in &winning_values {
-                for card_value in &card_values {
-                    if *card_value == *winning_value {
-                        scratchcards[i as usize] += 1;
-                        i += 1;
-                        break;
-                    }
+
+        let mut i = id + 1;
+        for winning_value in &winning_values {
+            for card_value in &card_values {
+                if *card_value == *winning_value {
+                    scratchcards[i as usize] += scratchcards[id];
+                    i += 1;
+                    break;
                 }
             }
         }
@@ -152,13 +112,15 @@ pub fn main() -> Result<(), std::io::Error> {
 
     println!("Day 04:");
 
+    let start = std::time::Instant::now();
     let sum = get_scratch_values(&data);
 
-    println!("\tPart 1 - Scratchcards values: {}", sum);
+    println!("\tPart 1 - Scratchcards values: {} ({} ms)", sum, start.elapsed().as_millis());
 
+    let start = std::time::Instant::now();
     let scratch_cards = get_scratch_cards(&data);
 
-    println!("\tPart 2 - Sum of scratchcards: {}", scratch_cards);
+    println!("\tPart 2 - Sum of scratchcards: {} ({} ms)", scratch_cards, start.elapsed().as_millis());
 
     drop(data);
 
