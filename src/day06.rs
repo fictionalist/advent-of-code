@@ -70,7 +70,7 @@ fn get_win_count_product_part_2(time_limit_str: &str, distances_str: &str) -> i3
 }
 
 pub fn main() -> Result<(), std::io::Error> {
-    let data = std::fs::read_to_string("input06.txt")?;
+    let data = std::fs::read_to_string("input/input06.txt")?;
 
     //let data = get_test_data();
 

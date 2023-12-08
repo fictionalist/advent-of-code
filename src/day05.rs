@@ -259,7 +259,7 @@ fn ingest_lines_for_seed_pairs(line_iter: &mut Iter<'_, &str>, seed_pairs: &Vec<
 }*/
 
 pub fn main() -> Result<(), std::io::Error> {
-    let data = std::fs::read_to_string("input05.txt")?;
+    let data = std::fs::read_to_string("input/input05.txt")?;
 
     //let data = get_test_data();
 

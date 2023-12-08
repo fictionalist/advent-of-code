@@ -12,7 +12,7 @@ fn separate_by_line(data: String) -> Vec<String> {
 }
 
 pub fn read_file(path: &str) -> Result<Vec<String>, std::io::Error> {
-    let mut fd = File::open(path)?;
+    let mut fd = File::open("input/".to_string() + path)?;
     let mut buffer : String = String::new();
     
     if fd.read_to_string(&mut buffer)? == 0 {
