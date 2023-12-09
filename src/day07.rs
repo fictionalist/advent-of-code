@@ -15,7 +15,7 @@ struct Hand {
     bet: i32
 }
 
-fn get_test_data() -> String {
+/*fn get_test_data() -> String {
     "2345A 1
     Q2KJJ 13
     Q2Q2Q 19
@@ -35,7 +35,7 @@ fn get_test_data() -> String {
     2AAAA 23
     2JJJJ 53
     JJJJ2 41".to_string()
-}
+}*/
 
 fn get_card_strength(card: &char) -> i8 {
     let cards = vec!('J', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'Q', 'K', 'A');
@@ -119,7 +119,6 @@ fn part_one(lines: &Vec<&str>) -> i32 {
 fn get_hand_with_joker(line: &str) -> Hand {
     let mut hand_a_count = std::collections::HashMap::<char, i8>::new();
     let mut cards: Vec<char> = vec!();
-    let mut joker_cards: Vec<char> = vec!();
 
     let mut split = line.split_whitespace();
     let hand_a = split.next().unwrap();

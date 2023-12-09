@@ -1,3 +1,4 @@
+/*
 fn get_test_data_part_one() -> String {
     "RL
 
@@ -22,6 +23,30 @@ fn get_test_data_part_two() -> String {
     22Z = (22B, 22B)
     XXX = (XXX, XXX)".to_string()
 }
+*/
+
+fn lcm(first: usize, second: usize) -> usize {
+    first * second / gcd(first, second)
+}
+
+fn gcd(first: usize, second: usize) -> usize {
+    let mut max = first;
+    let mut min = second;
+    if min > max {
+        let val = max;
+        max = min;
+        min = val;
+    }
+    loop {
+        let res = max % min;
+        if res == 0 {
+            return min;
+        }
+
+        max = min;
+        min = res;
+    }
+}
 
 fn get_node(line: &str) -> (String, (String, String)) {
     let split: Vec<&str> = line.trim().split_whitespace().collect();
@@ -33,7 +58,7 @@ fn get_node(line: &str) -> (String, (String, String)) {
     (value, (left, right))    
 }
 
-fn loop_through(pattern: &Vec<bool>, map: &std::collections::HashMap<String, (String, String)>, targets: &Vec<&str>, start: &str) -> i32 {
+fn loop_through(pattern: &Vec<bool>, map: &std::collections::HashMap<String, (String, String)>, targets: &Vec<String>, start: &str) -> i64 {
     let mut pattern_position = 0;
     let mut cursor = start;
     let mut step_count = 0;
@@ -74,33 +99,7 @@ fn loop_through(pattern: &Vec<bool>, map: &std::collections::HashMap<String, (St
     step_count
 }
 
-fn step_through(map: &std::collections::HashMap<String, (String, String)>, targets: &Vec<&str>, cursor_pos: &str, direction_right: bool) -> String {
-
-    let mut cursor = cursor_pos;
-
-    match map.get(cursor) {
-        Some(item) => {
-            match direction_right {
-                true => {
-                    cursor = &item.1;
-                },
-                false => {
-                    cursor = &item.0;
-                }
-            }
-            for target in targets {
-                if cursor == *target {
-                    break;
-                }
-            }
-        },
-        None => {}
-    }
-
-    cursor.to_string()
-}
-
-fn part_one(lines: Vec<&str>) -> i32 {
+fn part_one(lines: Vec<&str>) -> i64 {
     let mut iterator = lines.iter();
 
     let pattern_str = iterator.next().unwrap().to_string();
@@ -121,7 +120,7 @@ fn part_one(lines: Vec<&str>) -> i32 {
         map.insert(node.0, (node.1.0, node.1.1));
     }
 
-    loop_through(&pattern, &map, &vec!("ZZZ"), "AAA")
+    loop_through(&pattern, &map, &vec!("ZZZ".to_string()), "AAA")
 }
 
 fn part_two(lines: Vec<&str>) -> i64 {
@@ -145,7 +144,7 @@ fn part_two(lines: Vec<&str>) -> i64 {
 
     for line in lines.into_iter().skip(2) {
         let node = get_node(line);
-        println!("({}, l: {}, r: {})", node.0, node.1.0, node.1.1);
+        //println!("({}, l: {}, r: {})", node.0, node.1.0, node.1.1);
         if node.0.ends_with("A") {
             starting_points.push(node.0.clone());
         }
@@ -155,43 +154,19 @@ fn part_two(lines: Vec<&str>) -> i64 {
         map.insert(node.0, (node.1.0, node.1.1));
     }
 
-    let mut step_count = 0;
-    let mut pattern_position = 0;
-    let mut direction_right = pattern[pattern_position];
-    let mut reached_target_count;
+    let mut step_cycles: Vec<i64> = Vec::new();
 
-    loop {
-        reached_target_count = 0;
-        step_count += 1;
-        for (idx, point) in starting_points.iter_mut().enumerate() {
-            if let Some(item) = map.get(point) {
-                match direction_right {
-                    true => {
-                        *point = item.1.clone();
-                    },
-                    false => {
-                        *point = item.0.clone();
-                    }
-                }
-            }
-            if point.ends_with("Z") {
-                reached_target_count += 1;
-            }
-        }
-        if reached_target_count > 30 {
-            println!("{}", reached_target_count);
-        }
-        if reached_target_count == starting_points.len() {
-            break;
-        }
-        pattern_position += 1;
-        if pattern_position >= pattern.len() {
-            pattern_position = 0;
-        }
-        direction_right = pattern[pattern_position];
+    for point in starting_points {
+        step_cycles.push(loop_through(&pattern, &map, &ending_points, point.as_str()));
     }
 
-    step_count
+    let mut min_multiple = 1;
+
+    for cycle in step_cycles {
+        min_multiple = lcm(min_multiple, cycle as usize);
+    }
+
+    min_multiple as i64
 }
 
 pub fn main() -> Result<(), std::io::Error> {
