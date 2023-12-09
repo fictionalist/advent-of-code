@@ -1,10 +1,8 @@
-#![allow(dead_code, unused_mut)]
-
-fn get_test_data() -> String {
+/*fn get_test_data() -> String {
     "0 3 6 9 12 15
     1 3 6 10 15 21
     10 13 16 21 30 45".to_string()
-}
+}*/
 
 fn extrapolate_next(line: &str) -> i64 {
     let nums_str: Vec<&str> = line.trim().split_whitespace().collect();
