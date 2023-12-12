@@ -4,18 +4,10 @@
     10 13 16 21 30 45".to_string()
 }*/
 
-fn extrapolate_next(line: &str) -> i64 {
-    let nums_str: Vec<&str> = line.trim().split_whitespace().collect();
-
+fn get_derivatives_until_constant(initial_values: Vec<i64>) -> Vec<Vec<i64>> {
     let mut derivatives: Vec<Vec<i64>> = Vec::new();
 
-    let mut nums: Vec<i64> = Vec::new();
-    for num in nums_str {
-        //print!("{} ", num);
-        nums.push(num.parse::<i64>().unwrap());
-    }
-    //println!("");
-    derivatives.push(nums);
+    derivatives.push(initial_values);
 
     loop {
         let mut deriv_iter = derivatives[derivatives.len() - 1].iter();
@@ -24,16 +16,29 @@ fn extrapolate_next(line: &str) -> i64 {
         let mut temp_vec: Vec<i64> = Vec::new();
         while let Some(right) = &deriv_iter.next() {
             let diff = *right - left;
-           //print!("{} ", diff);
             temp_vec.push(diff);
             left = right;
         }
-        //println!("");
+
         if temp_vec.iter().all(|i| *i == 0) {
             break;
         }
         derivatives.push(temp_vec);
     }
+
+    derivatives
+}
+
+fn extrapolate_next(line: &str) -> i64 {
+    let nums_str: Vec<&str> = line.trim().split_whitespace().collect();
+
+    let mut nums: Vec<i64> = Vec::new();
+    for num in nums_str {
+        //print!("{} ", num);
+        nums.push(num.parse::<i64>().unwrap());
+    }
+    //println!("");
+    let mut derivatives = get_derivatives_until_constant(nums);
 
     let mut rev_derivs = derivatives.iter_mut().rev();
     let mut diff = *rev_derivs.next().unwrap().last().unwrap();
@@ -52,33 +57,13 @@ fn extrapolate_next(line: &str) -> i64 {
 fn extrapolate_previous(line: &str) -> i64 {
     let nums_str: Vec<&str> = line.trim().split_whitespace().collect();
 
-    let mut derivatives: Vec<Vec<i64>> = Vec::new();
-
     let mut nums: Vec<i64> = Vec::new();
     for num in nums_str {
         //print!("{} ", num);
         nums.push(num.parse::<i64>().unwrap());
     }
     //println!("");
-    derivatives.push(nums);
-
-    loop {
-        let mut deriv_iter = derivatives[derivatives.len() - 1].iter();
-        let mut left = deriv_iter.next().unwrap();
-
-        let mut temp_vec: Vec<i64> = Vec::new();
-        while let Some(right) = &deriv_iter.next() {
-            let diff = *right - left;
-           //print!("{} ", diff);
-            temp_vec.push(diff);
-            left = right;
-        }
-        //println!("");
-        if temp_vec.iter().all(|i| *i == 0) {
-            break;
-        }
-        derivatives.push(temp_vec);
-    }
+    let mut derivatives = get_derivatives_until_constant(nums);
 
     let mut rev_derivs = derivatives.iter_mut().rev();
     let mut diff = *rev_derivs.next().unwrap().first().unwrap();
